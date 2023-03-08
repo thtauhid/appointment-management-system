@@ -28,6 +28,12 @@ module.exports = (sequelize, DataTypes) => {
         where: { id },
       })
     }
+
+    static async deleteAppointmentById(id) {
+      return await Appointment.destroy({
+        where: { id },
+      })
+    }
   }
   Appointment.init(
     {

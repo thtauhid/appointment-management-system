@@ -115,6 +115,32 @@ app.get('/appointment/edit/:id', async (req, res) => {
   return res.render('edit-appointment', { appointment })
 })
 
+app.delete('/appointment/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const appointment = await Appointment.getAppointmentById(id)
+
+    if (!appointment) {
+      req.flash('error', 'Appointment not found')
+      return res.redirect('/appointments')
+    }
+
+    const deletedAppointment = await Appointment.deleteAppointmentById(id)
+
+    if (!deletedAppointment) {
+      req.flash('error', 'Unable to delete appointment')
+      return res.status(400).send('Appointment not deleted')
+    }
+
+    req.flash('info', 'Appointment deleted successfully')
+    return res.status(200).send({ success: true })
+  } catch (error) {
+    req.flash('error', 'Unable to delete appointment')
+    return res.status(400).send('Appointment not deleted')
+  }
+})
+
 app.listen(port, () => {
   console.log(`App listening on port ${port}!`)
 })

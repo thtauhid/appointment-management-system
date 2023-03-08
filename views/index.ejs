@@ -24,5 +24,27 @@
     <div class="flex mx-auto mt-5" style="max-width: 1280px">
       <%- include('appointments') %> <%- include('actions') %>
     </div>
+    <script>
+      const deleteAppointment = (id) => {
+        const confirm = window.confirm(
+          'Are you sure you want to delete this appointment? Click OK to continue.'
+        )
+
+        if (confirm) {
+          fetch(`/appointment/${id}`, {
+            method: 'DELETE',
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                window.location.href = '/appointments'
+              }
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+        }
+      }
+    </script>
   </body>
 </html>
