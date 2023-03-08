@@ -1,5 +1,5 @@
 <div class="basis-3/5 p-2">
   <h2 class="font-bold text-3xl mb-2 mt-1 p-2">Appointments</h2>
-  <%- include('single') %> <%- include('single') %> <%- include('single') %> <%-
-  include('single') %>
+  <% if (appointments.length > 0) { %> <% appointments.forEach((appointment) =>
+  { %> <%- include('single', {appointment}) %> <% }); %> <% } %>
 </div>

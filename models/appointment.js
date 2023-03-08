@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
     static async createAppointment(appointment) {
       return await Appointment.create(appointment)
     }
+
+    static async getAllAppointments() {
+      return await Appointment.findAll()
+    }
   }
   Appointment.init(
     {

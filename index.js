@@ -17,7 +17,7 @@ app.set('views', path.join(__dirname, 'views'))
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.get('/', (req, res) => {
-  return res.render('index')
+  return res.redirect('/appointments')
 })
 
 app.post('/appointment', async (req, res) => {
@@ -36,6 +36,12 @@ app.post('/appointment', async (req, res) => {
   } catch (error) {
     return res.status(500).send('Server error')
   }
+})
+
+app.get('/appointments', async (req, res) => {
+  const appointments = await Appointment.getAllAppointments()
+  console.log(appointments)
+  return res.render('index', { appointments })
 })
 
 app.listen(port, () => {
