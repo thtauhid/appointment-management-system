@@ -56,6 +56,7 @@
       <p class="ml-1"><%= appointment.date %></p>
     </span>
 
+    <% if(appointment.details) { %>
     <span class="flex items-top mt-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -74,6 +75,7 @@
 
       <p class="ml-1"><%= appointment.details %></p>
     </span>
+    <% } %>
   </div>
   <!-- Details End -->
   <!-- Actions Start -->
