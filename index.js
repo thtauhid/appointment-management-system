@@ -75,32 +75,49 @@ app.get('/appointments', async (req, res) => {
   return res.render('index', { appointments })
 })
 
-app.post('/edit-appointment/:id', async (req, res) => {
-  const { id } = req.params
-  let { title, details } = req.body
+app.patch('/appointment/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    let { title, details } = req.body
 
-  // Trim input
-  title = title.trim()
-  details = details.trim()
+    // Trim input
+    title = title.trim()
+    details = details.trim()
 
-  // Input validation
-  if (!title) {
-    req.flash('error', 'Title is required')
-    return res.redirect(`/appointment/edit/${id}`)
-  }
+    // Input validation
+    if (!title) {
+      req.flash('error', 'Title is required')
+      return res.send({
+        success: false,
+        message: 'Title is required',
+      })
+    }
 
-  const appointment = await Appointment.updateAppointmentById(id, {
-    title,
-    details,
-  })
+    const appointment = await Appointment.updateAppointmentById(id, {
+      title,
+      details,
+    })
 
-  if (!appointment) {
+    if (!appointment) {
+      req.flash('error', 'Unable to update appointment')
+      return res.send({
+        success: false,
+        message: 'Unable to update appointment',
+      })
+    }
+
+    req.flash('success', 'Appointment updated successfully')
+    return res.send({
+      success: true,
+      message: 'Appointment updated successfully',
+    })
+  } catch (error) {
     req.flash('error', 'Unable to update appointment')
-    return res.redirect('/appointments')
+    return res.send({
+      success: false,
+      message: 'Unable to update appointment',
+    })
   }
-
-  req.flash('success', 'Appointment updated successfully')
-  return res.redirect('/appointments')
 })
 
 app.get('/appointment/edit/:id', async (req, res) => {
