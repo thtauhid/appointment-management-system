@@ -34,11 +34,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TIME,
         allowNull: false,
       },
-      location: {
-        type: DataTypes.STRING,
-        enum: ['in-person', 'online', 'hybrid'],
-        allowNull: false,
-      },
       details: {
         type: DataTypes.TEXT,
         trim: true,

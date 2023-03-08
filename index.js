@@ -40,11 +40,11 @@ app.get('/', (req, res) => {
 
 app.post('/appointment', async (req, res) => {
   try {
-    const { title, date, time, location, details } = req.body
+    const { title, date, time, details } = req.body
 
     // Input validation
-    if (!title || !date || !time || !location) {
-      req.flash('error', 'Title, date, time and location are required')
+    if (!title || !date || !time) {
+      req.flash('error', 'Title, date and time are required')
       return res.redirect('/appointments')
     }
 
@@ -52,7 +52,6 @@ app.post('/appointment', async (req, res) => {
       title,
       date,
       time,
-      location,
       details,
     })
 
