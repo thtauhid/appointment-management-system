@@ -4,11 +4,29 @@ const port = process.env.PORT || 3000
 const express = require('express')
 const app = express()
 const path = require('path')
+const flash = require('connect-flash')
+const session = require('express-session')
 
 const { Appointment } = require('./models')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+// Flash
+app.use(
+  session({
+    secret: 'asdfghjiuytredfvbnmjuytdmlkjgtredj',
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  })
+)
+app.use(flash())
+
+app.use((req, res, next) => {
+  res.locals.messages = req.flash()
+  next()
+})
 
 // Set view engine
 app.set('view engine', 'ejs')
@@ -24,6 +42,8 @@ app.post('/appointment', async (req, res) => {
   try {
     const { title, date, time, location, details } = req.body
 
+    // TODO: Validate every input
+
     const appointment = await Appointment.createAppointment({
       title,
       date,
@@ -31,16 +51,22 @@ app.post('/appointment', async (req, res) => {
       location,
       details,
     })
-    if (!appointment) return res.status(400).send('Appointment not created')
-    return res.redirect('/')
+
+    if (!appointment) {
+      req.flash('error', 'Unable to create appointment')
+      return res.status(400).send('Appointment not created')
+    }
+
+    req.flash('success', 'Appointment created successfully')
+    return res.redirect('/appointments')
   } catch (error) {
-    return res.status(500).send('Server error')
+    req.flash('error', 'Unable to create appointment')
+    return res.redirect('/appointments')
   }
 })
 
 app.get('/appointments', async (req, res) => {
   const appointments = await Appointment.getAllAppointments()
-  console.log(appointments)
   return res.render('index', { appointments })
 })
 

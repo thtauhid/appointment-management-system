@@ -1,0 +1,15 @@
+<!-- Error box -->
+<% if (messages.error) { %>
+<div class="bg-red-600 text-white m-1 px-4 py-2 rounded">
+  <%= messages.error %>
+</div>
+<% } %>
+<!-- Error box end -->
+
+<!-- Success box -->
+<% if (messages.success) { %>
+<div class="bg-green-600 text-white m-1 px-4 py-2 rounded">
+  <%= messages.success %>
+</div>
+<% } %>
+<!-- Success box end -->
