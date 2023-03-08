@@ -1,5 +1,5 @@
 <h2 class="font-bold text-3xl m-1 p-2">Create new appointment</h2>
-<form action="" class="flex flex-col">
+<form action="/appointment" method="post" class="flex flex-col">
   <div class="flex flex-row border-2 rounded border-stone-500 m-1">
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -19,6 +19,7 @@
       type="text"
       class="w-full p-2 border-l-2 border-stone-500"
       placeholder="Appointment title"
+      name="title"
     />
   </div>
   <div class="flex flex-row">
@@ -38,7 +39,11 @@
         />
       </svg>
 
-      <input type="date" class="w-full p-2 border-l-2 border-stone-500" />
+      <input
+        type="date"
+        class="w-full p-2 border-l-2 border-stone-500"
+        name="date"
+      />
     </div>
     <div class="basis-1/2 flex flex-row border-2 rounded border-stone-500 m-1">
       <svg
@@ -56,7 +61,11 @@
         />
       </svg>
 
-      <input type="time" class="w-full p-2 border-l-2 border-stone-500" />
+      <input
+        type="time"
+        class="w-full p-2 border-l-2 border-stone-500"
+        name="time"
+      />
     </div>
   </div>
   <div class="flex flex-row border-2 rounded border-stone-500 m-1">
@@ -82,15 +91,15 @@
 
     <div class="w-full p-2 border-l-2 border-stone-500 flex">
       <div class="mx-3">
-        <input type="radio" name="mode" id="inPerson" />
+        <input type="radio" name="location" id="inPerson" />
         <label for="inPerson">In Person</label>
       </div>
       <div class="mx-3">
-        <input type="radio" name="mode" id="online" />
+        <input type="radio" name="location" id="online" />
         <label for="online">Online</label>
       </div>
       <div class="mx-3">
-        <input type="radio" name="mode" id="hybrid" />
+        <input type="radio" name="location" id="hybrid" />
         <label for="hybrid">Hybrid</label>
       </div>
     </div>
@@ -98,8 +107,7 @@
 
   <textarea
     class="border-2 border-stone-500 rounded p-2 m-1"
-    name=""
-    id=""
+    name="details"
     cols="30"
     rows="3"
     placeholder="Appointment description"

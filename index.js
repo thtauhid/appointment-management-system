@@ -5,6 +5,8 @@ const express = require('express')
 const app = express()
 const path = require('path')
 
+const { Appointment } = require('./models')
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
@@ -16,6 +18,24 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.get('/', (req, res) => {
   return res.render('index')
+})
+
+app.post('/appointment', async (req, res) => {
+  try {
+    const { title, date, time, location, details } = req.body
+
+    const appointment = await Appointment.createAppointment({
+      title,
+      date,
+      time,
+      location,
+      details,
+    })
+    if (!appointment) return res.status(400).send('Appointment not created')
+    return res.redirect('/')
+  } catch (error) {
+    return res.status(500).send('Server error')
+  }
 })
 
 app.listen(port, () => {
