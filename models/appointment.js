@@ -18,6 +18,16 @@ module.exports = (sequelize, DataTypes) => {
     static async getAllAppointments() {
       return await Appointment.findAll()
     }
+
+    static async getAppointmentById(id) {
+      return await Appointment.findByPk(id)
+    }
+
+    static async updateAppointmentById(id, appointment) {
+      return await Appointment.update(appointment, {
+        where: { id },
+      })
+    }
   }
   Appointment.init(
     {

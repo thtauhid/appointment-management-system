@@ -44,6 +44,8 @@ app.post('/appointment', async (req, res) => {
 
     // Input validation
     if (!title || !date || !time) {
+      // TODO: Send the previously entered data
+
       req.flash('error', 'Title, date and time are required')
       return res.redirect('/appointments')
     }
@@ -71,6 +73,46 @@ app.post('/appointment', async (req, res) => {
 app.get('/appointments', async (req, res) => {
   const appointments = await Appointment.getAllAppointments()
   return res.render('index', { appointments })
+})
+
+app.post('/edit-appointment/:id', async (req, res) => {
+  const { id } = req.params
+  let { title, details } = req.body
+
+  // Trim input
+  title = title.trim()
+  details = details.trim()
+
+  // Input validation
+  if (!title) {
+    req.flash('error', 'Title is required')
+    return res.redirect(`/appointment/edit/${id}`)
+  }
+
+  const appointment = await Appointment.updateAppointmentById(id, {
+    title,
+    details,
+  })
+
+  if (!appointment) {
+    req.flash('error', 'Unable to update appointment')
+    return res.redirect('/appointments')
+  }
+
+  req.flash('success', 'Appointment updated successfully')
+  return res.redirect('/appointments')
+})
+
+app.get('/appointment/edit/:id', async (req, res) => {
+  const { id } = req.params
+  const appointment = await Appointment.getAppointmentById(id)
+
+  if (!appointment) {
+    req.flash('error', 'Appointment not found')
+    return res.redirect('/appointments')
+  }
+
+  return res.render('edit-appointment', { appointment })
 })
 
 app.listen(port, () => {
