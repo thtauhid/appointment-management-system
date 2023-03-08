@@ -42,7 +42,11 @@ app.post('/appointment', async (req, res) => {
   try {
     const { title, date, time, location, details } = req.body
 
-    // TODO: Validate every input
+    // Input validation
+    if (!title || !date || !time || !location) {
+      req.flash('error', 'Title, date, time and location are required')
+      return res.redirect('/appointments')
+    }
 
     const appointment = await Appointment.createAppointment({
       title,
