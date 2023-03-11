@@ -37,7 +37,10 @@
         />
       </svg>
 
-      <p class="ml-1"><%= appointment.time %></p>
+      <p class="ml-1">
+        <%= appointment.startTime.slice(0, 5) %> - <%=
+        appointment.endTime.slice(0, 5) %>
+      </p>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

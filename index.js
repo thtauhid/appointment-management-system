@@ -40,20 +40,23 @@ app.get('/', (req, res) => {
 
 app.post('/appointment', async (req, res) => {
   try {
-    const { title, date, time, details } = req.body
+    const { title, date, startTime, endTime, details } = req.body
 
     // Input validation
-    if (!title || !date || !time) {
+    if (!title || !date || !startTime || !endTime) {
       // TODO: Send the previously entered data
 
-      req.flash('error', 'Title, date and time are required')
+      req.flash('error', 'Title, date, start time and end time are required')
       return res.redirect('/appointments')
     }
+
+    // TODO: check if start time is less than end time
 
     const appointment = await Appointment.createAppointment({
       title,
       date,
-      time,
+      startTime,
+      endTime,
       details,
     })
 
