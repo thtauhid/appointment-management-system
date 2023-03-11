@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: 'Source Sans Pro', sans-serif;
+      }
+    </style>
+    <title>Hi</title>
+  </head>
+  <body>
+    <div class="mt-5 mx-auto" style="max-width: 1280px">
+      <%- include('messages.ejs') %>
+    </div>
+    <div
+      class="bg-blue-600 text-white mb-1 px-4 py-2 rounded mt-5 mx-auto"
+      style="max-width: 1280px"
+    >
+      <p>Suggested time slots are displayed below.</p>
+      <p>
+        You may choose to create the new appointment at one of the suggested
+        times.
+      </p>
+      <p>You may also decide to replace the old appointment.</p>
+    </div>
+
+    <div class="flex mx-auto" style="max-width: 1280px">
+      <div class="basis-3/5 flex flex-col mr-5">
+        <div class="">
+          <h1 class="text-2xl font-bold mt-5">
+            List of overlapping appointments
+          </h1>
+          <div class="flex flex-col mx-auto mt-5">
+            <% for (let i = 0; i < overlappingAppointments.length; i++) { %>
+
+            <!--  -->
+            <%- include('single', { appointment: overlappingAppointments[i],
+            overlap: true }) %>
+
+            <!--  -->
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <div class="basis-2/5 ml-5">
+        <h2 class="text-2xl font-bold mt-5">Current Appointment Details</h2>
+        <div class="flex flex-col mx-auto mt-5">
+          <label for="title" class="ml-1">Appointment Title</label>
+          <div class="flex flex-row border-2 rounded border-stone-500 m-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6 m-2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
+              />
+            </svg>
+            <input
+              type="text"
+              class="w-full p-2 border-l-2 border-stone-500"
+              placeholder="Appointment title"
+              name="title"
+              id="title"
+              disabled
+              value="<%= currentAppointment.title %>"
+            />
+          </div>
+
+          <!-- Start Time -->
+          <label for="startTime" class="mt-2 ml-1">Starts At</label>
+          <div class="flex flex-row border-2 rounded border-stone-500 m-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6 m-2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+
+            <input
+              type="datetime-local"
+              class="w-full p-2 border-l-2 border-stone-500"
+              name="startTime"
+              id="startTime"
+              disabled
+              value="<%= currentAppointment.startTime %>"
+            />
+          </div>
+
+          <!-- End Time -->
+          <label for="endTime" class="mt-2 ml-1">Ends At</label>
+          <div class="flex flex-row border-2 rounded border-stone-500 m-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6 m-2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+
+            <input
+              type="datetime-local"
+              class="w-full p-2 border-l-2 border-stone-500"
+              name="endTime"
+              id="endTime"
+              disabled
+              value="<%= currentAppointment.endTime %>"
+            />
+          </div>
+
+          <label for="details" class="mt-2 ml-1">Details</label>
+          <textarea
+            class="border-2 border-stone-500 rounded p-2 m-1"
+            name="details"
+            cols="30"
+            rows="3"
+            id="details"
+            disabled
+          >
+<%= currentAppointment.details %></textarea
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

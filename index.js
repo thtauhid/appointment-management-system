@@ -56,7 +56,25 @@ app.post('/appointment', async (req, res) => {
     const overlappingAppointments =
       await Appointment.checkOverlappingAppointments(startTime, endTime)
 
-    console.table({ overlappingAppointments })
+    if (overlappingAppointments.length > 0) {
+      req.flash(
+        'error',
+        'The time you entered is overlapping with another appointment.'
+      )
+
+      // send the overlapping appointments and the current appointment
+      const currentAppointment = {
+        title,
+        startTime,
+        endTime,
+        details,
+      }
+
+      return res.render('overlap', {
+        overlappingAppointments,
+        currentAppointment,
+      })
+    }
 
     const appointment = await Appointment.createAppointment({
       title,
