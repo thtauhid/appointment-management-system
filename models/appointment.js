@@ -1,5 +1,5 @@
 'use strict'
-const { Model } = require('sequelize')
+const { Model, Op } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Appointment extends Model {
     /**
@@ -34,6 +34,19 @@ module.exports = (sequelize, DataTypes) => {
         where: { id },
       })
     }
+
+    static async checkOverlappingAppointments(startTime, endTime) {
+      return await Appointment.findAll({
+        where: {
+          startTime: {
+            [Op.lte]: endTime,
+          },
+          endTime: {
+            [Op.gte]: startTime,
+          },
+        },
+      })
+    }
   }
   Appointment.init(
     {
@@ -42,16 +55,12 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         trim: true,
       },
-      date: {
+      startTime: {
         type: DataTypes.DATE,
         allowNull: false,
       },
-      startTime: {
-        type: DataTypes.TIME,
-        allowNull: false,
-      },
       endTime: {
-        type: DataTypes.TIME,
+        type: DataTypes.DATE,
         allowNull: false,
       },
       details: {

@@ -40,21 +40,26 @@ app.get('/', (req, res) => {
 
 app.post('/appointment', async (req, res) => {
   try {
-    const { title, date, startTime, endTime, details } = req.body
+    const { title, startTime, endTime, details } = req.body
 
     // Input validation
-    if (!title || !date || !startTime || !endTime) {
+    if (!title || !startTime || !endTime) {
       // TODO: Send the previously entered data
 
-      req.flash('error', 'Title, date, start time and end time are required')
+      req.flash('error', 'Title, start time and end time are required')
       return res.redirect('/appointments')
     }
 
     // TODO: check if start time is less than end time
 
+    // Check if time is overlapping
+    const overlappingAppointments =
+      await Appointment.checkOverlappingAppointments(startTime, endTime)
+
+    console.table({ overlappingAppointments })
+
     const appointment = await Appointment.createAppointment({
       title,
-      date,
       startTime,
       endTime,
       details,
