@@ -36,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async checkOverlappingAppointments(startTime, endTime) {
+      // convert startTime and endTime to Date objects
+      startTime = new Date(startTime)
+      endTime = new Date(endTime)
+
       return await Appointment.findAll({
         where: {
           startTime: {
