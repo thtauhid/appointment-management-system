@@ -58,14 +58,10 @@ app.post('/appointment', async (req, res) => {
       await Appointment.checkOverlappingAppointments(startTime, endTime)
 
     if (overlappingAppointments.length > 0) {
-      req.flash(
-        'error',
-        'The time you entered is overlapping with another appointment.'
-      )
-
       // go over the overlapping appointments and format the time
       overlappingAppointments = overlappingAppointments.map((appointment) => {
         return {
+          id: appointment.id,
           title: appointment.title,
           details: appointment.details,
           startTime: moment(appointment.startTime).format(
@@ -131,6 +127,7 @@ app.get('/appointments', async (req, res) => {
   // Format the time
   appointments = appointments.map((appointment) => {
     return {
+      id: appointment.id,
       title: appointment.title,
       details: appointment.details,
       startTime: moment(appointment.startTime).format('hh:mm A (DD MMMM YY)'),
@@ -221,6 +218,57 @@ app.delete('/appointment/:id', async (req, res) => {
   } catch (error) {
     req.flash('error', 'Unable to delete appointment')
     return res.status(400).send('Appointment not deleted')
+  }
+})
+
+app.post('/appointment/replace/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+
+    let appointment = await Appointment.getAppointmentById(id)
+
+    if (!appointment) {
+      req.flash('error', 'Appointment not found')
+      return res.send({
+        success: false,
+        message: 'Appointment not found',
+      })
+    }
+
+    const deletedAppointment = await Appointment.deleteAppointmentById(id)
+
+    if (!deletedAppointment) {
+      req.flash('error', 'Unable to delete appointment')
+      return res.status(400).send({
+        success: false,
+        message: 'Unable to delete appointment',
+      })
+    }
+
+    req.flash('info', 'Appointment deleted successfully')
+
+    // create the new appointment
+    const { title, startTime, endTime, details } = req.body
+
+    appointment = await Appointment.createAppointment({
+      title,
+      startTime,
+      endTime,
+      details,
+    })
+
+    if (!appointment) {
+      req.flash('error', 'Unable to create new appointment')
+      return res.status(400).send({
+        success: false,
+      })
+    }
+
+    req.flash('success', 'Appointment replaced successfully')
+    return res.status(200).send({ success: true })
+  } catch (error) {
+    req.flash('error', 'Unable to replace appointment')
+    return res.status(400).send({ success: false })
   }
 })
 

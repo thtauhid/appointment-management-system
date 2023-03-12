@@ -13,6 +13,17 @@
       rel="stylesheet"
     />
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="appointment-title" content="<%= currentAppointment.title %>" />
+    <meta
+      name="appointment-start"
+      content="<%= currentAppointment.startTime %>"
+    />
+    <meta name="appointment-end" content="<%= currentAppointment.endTime %>" />
+    <meta
+      name="appointment-details"
+      content="<%= currentAppointment.details %>"
+    />
+
     <style>
       body {
         font-family: 'Source Sans Pro', sans-serif;
@@ -167,5 +178,39 @@
         </div>
       </div>
     </div>
+    <script>
+      const new_data = {
+        title: '<%= currentAppointment.title %>',
+        startTime: '<%= currentAppointment.startTime %>',
+        endTime: '<%= currentAppointment.endTime %>',
+        details: '<%= currentAppointment.details %>',
+      }
+
+      const replaceAppointment = (old_id) => {
+        // confirm the replacement
+        const confirm = window.confirm(
+          'Are you sure you want to replace the old appointment? Click OK to confirm.'
+        )
+
+        if (confirm) {
+          // delete the old appointment
+          fetch(`/appointment/replace/${old_id}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(new_data),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                window.location.href = '/appointments'
+              } else {
+                alert('Something went wrong. Please try again.')
+              }
+            })
+        }
+      }
+    </script>
   </body>
 </html>
