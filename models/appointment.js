@@ -55,10 +55,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async getSuggestedTime(startTime, endTime) {
-      const appointments = await Appointment.checkOverlappingAppointments(
-        startTime,
-        endTime
-      )
+      const appointments = await Appointment.getAllAppointments()
 
       // convert startTime and endTime to Date objects
       startTime = new Date(startTime)
@@ -70,22 +67,36 @@ module.exports = (sequelize, DataTypes) => {
       let suggestedStartTime = startTime
       let suggestedEndTime = endTime
 
-      // find the first available time slot
+      // find the available time slot
       for (let i = 0; i < appointments.length; i++) {
         const appointment = appointments[i]
-
-        // convert appointment startTime and endTime to Date objects
-        const appointmentStartTime = new Date(appointment.startTime)
         const appointmentEndTime = new Date(appointment.endTime)
 
-        // check if the current appointment's startTime is greater than the previous appointment's endTime
-        if (appointmentStartTime.getTime() > suggestedEndTime.getTime()) {
+        // check if the current appointment is the last appointment
+        if (i === appointments.length - 1) {
+          // suggest the end time as suggestedstartTime
+          suggestedStartTime = appointmentEndTime
+          suggestedEndTime = new Date(suggestedStartTime.getTime() + duration)
           break
-        }
+        } else {
+          // if appointment is not the last one
+          const nextAppointment = appointments[i + 1]
 
-        // update the suggestedStartTime and suggestedEndTime
-        suggestedStartTime = appointmentEndTime
-        suggestedEndTime = new Date(appointmentEndTime.getTime() + duration)
+          // convert appointment startTime to Date objects
+          const nextAppointmentStartTime = new Date(nextAppointment.startTime)
+
+          // check the duration between the current appointment and the next appointment
+          const durationBetweenAppointments =
+            nextAppointmentStartTime.getTime() - appointmentEndTime.getTime()
+
+          console.log({ duration, durationBetweenAppointments })
+          // check if we have enough time to schedule the appointment
+          if (durationBetweenAppointments >= duration) {
+            suggestedStartTime = appointmentEndTime
+            suggestedEndTime = new Date(suggestedStartTime.getTime() + duration)
+            break
+          }
+        }
       }
 
       return {
