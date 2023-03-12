@@ -176,6 +176,40 @@
 <%= currentAppointment.details %></textarea
           >
         </div>
+        <div>
+          <button class="bg-red-500 block w-full text-white p-2 m-1 rounded">
+            Replace Overlapping Events
+          </button>
+          <form method="POST" action="/appointment">
+            <input
+              type="hidden"
+              name="title"
+              value="<%= suggestedAppointment.title %>"
+            />
+            <input
+              type="hidden"
+              name="startTime"
+              value="<%= suggestedAppointment.unmodifiedStartTime %>"
+            />
+            <input
+              type="hidden"
+              name="endTime"
+              value="<%= suggestedAppointment.unmodifiedEndTime %>"
+            />
+            <input
+              type="hidden"
+              name="details"
+              value="<%= suggestedAppointment.details %>"
+            />
+
+            <button
+              class="bg-green-500 block w-full text-white p-2 m-1 rounded"
+              type="submit"
+            >
+              Accept Suggested Time Slot
+            </button>
+          </form>
+        </div>
       </div>
     </div>
     <script>

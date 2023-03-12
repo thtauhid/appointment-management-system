@@ -135,45 +135,6 @@
       </svg>
     </button>
     <% } %>
-
-    <!--  -->
-
-    <% if(options.approve) { %>
-    <form method="POST" action="/appointment">
-      <input type="hidden" name="title" value="<%= appointment.title %>" />
-      <input
-        type="hidden"
-        name="startTime"
-        value="<%= appointment.unmodifiedStartTime %>"
-      />
-      <input
-        type="hidden"
-        name="endTime"
-        value="<%= appointment.unmodifiedEndTime %>"
-      />
-      <input type="hidden" name="details" value="<%= appointment.details %>" />
-
-      <button
-        class="p-3 hover:bg-green-500 hover:text-white border-y-2 border-stone-500"
-        type="submit"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M4.5 12.75l6 6 9-13.5"
-          />
-        </svg>
-      </button>
-    </form>
-    <% } %>
   </div>
   <!-- Actions End -->
 </div>
