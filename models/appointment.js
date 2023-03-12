@@ -104,6 +104,22 @@ module.exports = (sequelize, DataTypes) => {
         endTime: suggestedEndTime,
       }
     }
+
+    static async deleteOverlappingAppointments(startTime, endTime) {
+      startTime = new Date(startTime)
+      endTime = new Date(endTime)
+
+      return await Appointment.destroy({
+        where: {
+          startTime: {
+            [Op.lt]: endTime,
+          },
+          endTime: {
+            [Op.gt]: startTime,
+          },
+        },
+      })
+    }
   }
   Appointment.init(
     {

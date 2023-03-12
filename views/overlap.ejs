@@ -13,16 +13,10 @@
       rel="stylesheet"
     />
     <script src="https://cdn.tailwindcss.com"></script>
-    <meta name="appointment-title" content="<%= currentAppointment.title %>" />
-    <meta
-      name="appointment-start"
-      content="<%= currentAppointment.startTime %>"
-    />
-    <meta name="appointment-end" content="<%= currentAppointment.endTime %>" />
-    <meta
-      name="appointment-details"
-      content="<%= currentAppointment.details %>"
-    />
+    <meta name="title" content="<%= currentAppointment.title %>" />
+    <meta name="startTime" content="<%= currentAppointment.startTime %>" />
+    <meta name="endTime" content="<%= currentAppointment.endTime %>" />
+    <meta name="details" content="<%= currentAppointment.details %>" />
 
     <style>
       body {
@@ -177,9 +171,13 @@
           >
         </div>
         <div>
-          <button class="bg-red-500 block w-full text-white p-2 m-1 rounded">
+          <button
+            class="bg-red-500 block w-full text-white p-2 m-1 rounded"
+            id="replace"
+          >
             Replace Overlapping Events
           </button>
+
           <form method="POST" action="/appointment">
             <input
               type="hidden"
@@ -213,14 +211,13 @@
       </div>
     </div>
     <script>
-      const new_data = {
-        title: '<%= currentAppointment.title %>',
-        startTime: '<%= currentAppointment.startTime %>',
-        endTime: '<%= currentAppointment.endTime %>',
-        details: '<%= currentAppointment.details %>',
-      }
+      // get data from meta
+      const startTime = document.querySelector('meta[name="startTime"]').content
+      const endTime = document.querySelector('meta[name="endTime"]').content
+      const title = document.querySelector('meta[name="title"]').content
+      const details = document.querySelector('meta[name="details"]').content
 
-      const replaceAppointment = (old_id) => {
+      const replaceAppointments = () => {
         // confirm the replacement
         const confirm = window.confirm(
           'Are you sure you want to replace the old appointment? Click OK to confirm.'
@@ -228,12 +225,17 @@
 
         if (confirm) {
           // delete the old appointment
-          fetch(`/appointment/replace/${old_id}`, {
+          fetch(`/appointment/replace`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(new_data),
+            body: JSON.stringify({
+              startTime,
+              endTime,
+              title,
+              details,
+            }),
           })
             .then((res) => res.json())
             .then((data) => {
@@ -245,6 +247,11 @@
             })
         }
       }
+
+      const replace = document.getElementById('replace')
+
+      // add click event listener to the replace button
+      replace.addEventListener('click', replaceAppointments)
     </script>
   </body>
 </html>

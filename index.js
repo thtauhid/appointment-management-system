@@ -223,36 +223,16 @@ app.delete('/appointment/:id', async (req, res) => {
   }
 })
 
-app.post('/appointment/replace/:id', async (req, res) => {
+app.post('/appointment/replace', async (req, res) => {
   try {
-    const { id } = req.params
+    const { startTime, endTime, title, details } = req.body
 
-    let appointment = await Appointment.getAppointmentById(id)
+    // Delete old appointments that are overlapping
+    await Appointment.deleteOverlappingAppointments(startTime, endTime)
 
-    if (!appointment) {
-      req.flash('error', 'Appointment not found')
-      return res.send({
-        success: false,
-        message: 'Appointment not found',
-      })
-    }
+    req.flash('error', 'Overlapping appointments deleted successfully')
 
-    const deletedAppointment = await Appointment.deleteAppointmentById(id)
-
-    if (!deletedAppointment) {
-      req.flash('error', 'Unable to delete appointment')
-      return res.status(400).send({
-        success: false,
-        message: 'Unable to delete appointment',
-      })
-    }
-
-    req.flash('error', 'Appointment deleted successfully')
-
-    // create the new appointment
-    const { title, startTime, endTime, details } = req.body
-
-    appointment = await Appointment.createAppointment({
+    const appointment = await Appointment.createAppointment({
       title,
       startTime,
       endTime,
