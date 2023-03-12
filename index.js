@@ -6,6 +6,7 @@ const app = express()
 const path = require('path')
 const flash = require('connect-flash')
 const session = require('express-session')
+const moment = require('moment')
 
 const { Appointment } = require('./models')
 
@@ -53,7 +54,7 @@ app.post('/appointment', async (req, res) => {
     // TODO: check if start time is less than end time
 
     // Check if time is overlapping
-    const overlappingAppointments =
+    let overlappingAppointments =
       await Appointment.checkOverlappingAppointments(startTime, endTime)
 
     if (overlappingAppointments.length > 0) {
@@ -61,6 +62,18 @@ app.post('/appointment', async (req, res) => {
         'error',
         'The time you entered is overlapping with another appointment.'
       )
+
+      // go over the overlapping appointments and format the time
+      overlappingAppointments = overlappingAppointments.map((appointment) => {
+        return {
+          title: appointment.title,
+          details: appointment.details,
+          startTime: moment(appointment.startTime).format(
+            'hh:mm A (DD MMMM YY)'
+          ),
+          endTime: moment(appointment.endTime).format('hh:mm A (DD MMMM YY)'),
+        }
+      })
 
       // send the overlapping appointments and the current appointment
       const currentAppointment = {
@@ -78,8 +91,10 @@ app.post('/appointment', async (req, res) => {
 
       const suggestedAppointment = {
         title,
-        startTime: new Date(suggestedTime.startTime),
-        endTime: new Date(suggestedTime.endTime),
+        startTime: moment(suggestedTime.startTime).format(
+          'hh:mm A (DD MMMM YY)'
+        ),
+        endTime: moment(suggestedTime.endTime).format('hh:mm A (DD MMMM YY)'),
         details,
       }
 
@@ -111,7 +126,18 @@ app.post('/appointment', async (req, res) => {
 })
 
 app.get('/appointments', async (req, res) => {
-  const appointments = await Appointment.getAllAppointments()
+  let appointments = await Appointment.getAllAppointments()
+
+  // Format the time
+  appointments = appointments.map((appointment) => {
+    return {
+      title: appointment.title,
+      details: appointment.details,
+      startTime: moment(appointment.startTime).format('hh:mm A (DD MMMM YY)'),
+      endTime: moment(appointment.endTime).format('hh:mm A (DD MMMM YY)'),
+    }
+  })
+
   return res.render('index', { appointments })
 })
 
