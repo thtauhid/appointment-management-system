@@ -39,13 +39,53 @@ module.exports = (sequelize, DataTypes) => {
       return await Appointment.findAll({
         where: {
           startTime: {
-            [Op.lte]: endTime,
+            [Op.lt]: endTime,
           },
           endTime: {
-            [Op.gte]: startTime,
+            [Op.gt]: startTime,
           },
         },
       })
+    }
+
+    static async getSuggestedTime(startTime, endTime) {
+      const appointments = await Appointment.checkOverlappingAppointments(
+        startTime,
+        endTime
+      )
+
+      // convert startTime and endTime to Date objects
+      startTime = new Date(startTime)
+      endTime = new Date(endTime)
+
+      // duration
+      const duration = endTime.getTime() - startTime.getTime()
+
+      let suggestedStartTime = startTime
+      let suggestedEndTime = endTime
+
+      // find the first available time slot
+      for (let i = 0; i < appointments.length; i++) {
+        const appointment = appointments[i]
+
+        // convert appointment startTime and endTime to Date objects
+        const appointmentStartTime = new Date(appointment.startTime)
+        const appointmentEndTime = new Date(appointment.endTime)
+
+        // check if the current appointment's startTime is greater than the previous appointment's endTime
+        if (appointmentStartTime.getTime() > suggestedEndTime.getTime()) {
+          break
+        }
+
+        // update the suggestedStartTime and suggestedEndTime
+        suggestedStartTime = appointmentEndTime
+        suggestedEndTime = new Date(appointmentEndTime.getTime() + duration)
+      }
+
+      return {
+        startTime: suggestedStartTime,
+        endTime: suggestedEndTime,
+      }
     }
   }
   Appointment.init(

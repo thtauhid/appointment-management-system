@@ -70,9 +70,23 @@ app.post('/appointment', async (req, res) => {
         details,
       }
 
+      // Get a suggested time
+      const suggestedTime = await Appointment.getSuggestedTime(
+        startTime,
+        endTime
+      )
+
+      const suggestedAppointment = {
+        title,
+        startTime: new Date(suggestedTime.startTime),
+        endTime: new Date(suggestedTime.endTime),
+        details,
+      }
+
       return res.render('overlap', {
         overlappingAppointments,
         currentAppointment,
+        suggestedAppointment,
       })
     }
 
