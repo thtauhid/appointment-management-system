@@ -91,6 +91,8 @@ app.post('/appointment', async (req, res) => {
           'hh:mm A (DD MMMM YY)'
         ),
         endTime: moment(suggestedTime.endTime).format('hh:mm A (DD MMMM YY)'),
+        unmodifiedStartTime: suggestedTime.startTime,
+        unmodifiedEndTime: suggestedTime.endTime,
         details,
       }
 
@@ -213,7 +215,7 @@ app.delete('/appointment/:id', async (req, res) => {
       return res.status(400).send('Appointment not deleted')
     }
 
-    req.flash('info', 'Appointment deleted successfully')
+    req.flash('error', 'Appointment deleted successfully')
     return res.status(200).send({ success: true })
   } catch (error) {
     req.flash('error', 'Unable to delete appointment')
@@ -245,7 +247,7 @@ app.post('/appointment/replace/:id', async (req, res) => {
       })
     }
 
-    req.flash('info', 'Appointment deleted successfully')
+    req.flash('error', 'Appointment deleted successfully')
 
     // create the new appointment
     const { title, startTime, endTime, details } = req.body
@@ -264,7 +266,7 @@ app.post('/appointment/replace/:id', async (req, res) => {
       })
     }
 
-    req.flash('success', 'Appointment replaced successfully')
+    req.flash('info', 'Appointment replaced successfully')
     return res.status(200).send({ success: true })
   } catch (error) {
     req.flash('error', 'Unable to replace appointment')
